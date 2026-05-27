@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 东软汇达</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 0; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .breadcrumb { padding: 15px 0; font-size: 14px; color: #666; }
+        .breadcrumb a { color: #667eea; text-decoration: none; }
+        .product-detail { display: flex; gap: 40px; background: white; border-radius: 10px; padding: 30px; }
+        .product-images { flex: 1; }
+        .main-image { width: 100%; height: 350px; object-fit: cover; border-radius: 10px; }
+        .product-info { flex: 1; }
+        .product-title { font-size: 24px; color: #333; margin-bottom: 15px; }
+        .product-subtitle { font-size: 14px; color: #999; margin-bottom: 20px; }
+        .price-box { background: #fff9f0; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .current-price { font-size: 32px; color: #ff6b6b; font-weight: bold; }
+        .original-price { font-size: 16px; color: #999; text-decoration: line-through; margin-left: 15px; }
+        .info-row { display: flex; margin: 10px 0; font-size: 14px; }
+        .info-row span:first-child { color: #999; width: 80px; }
+        .info-row span:last-child { color: #333; }
+        .quantity-box { display: flex; align-items: center; margin: 20px 0; }
+        .quantity-box label { margin-right: 15px; font-size: 14px; }
+        .quantity-input { display: flex; align-items: center; }
+        .qty-btn { width: 35px; height: 35px; border: 1px solid #ddd; background: #f5f5f5; font-size: 18px; cursor: pointer; }
+        .qty-btn:hover { background: #667eea; color: white; }
+        .qty-num { width: 60px; text-align: center; height: 35px; border: 1px solid #ddd; border-left: none; border-right: none; outline: none; font-size: 14px; }
+        .btn-group { display: flex; gap: 15px; margin-top: 25px; }
+        .btn-buy { flex: 1; padding: 15px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .btn-cart { flex: 1; padding: 15px; border: 2px solid #667eea; background: white; color: #667eea; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .btn-cart:hover { background: #667eea; color: white; }
+        .product-desc { margin-top: 30px; background: white; border-radius: 10px; padding: 30px; }
+        .product-desc h3 { border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 20px; }
+        .product-desc p { line-height: 1.8; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">东软汇达</div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="cart.html">购物车</a>
+                <a href="user.html">个人中心</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> &gt; <span id="categoryName">图书</span> &gt; <span id="productName">商品详情</span>
+        </div>
+        <div class="product-detail">
+            <div class="product-images">
+                <img id="productImage" class="main-image" src="../images/product1.svg" alt="商品图片">
+            </div>
+            <div class="product-info">
+                <h1 class="product-title" id="detailTitle">加载中...</h1>
+                <p class="product-subtitle" id="detailSubtitle"></p>
+                <div class="price-box">
+                    <span class="current-price" id="detailPrice">¥0.00</span>
+                    <span class="original-price" id="detailOriginal">¥0.00</span>
+                </div>
+                <div class="info-row"><span>作者</span><span id="detailAuthor">-</span></div>
+                <div class="info-row"><span>出版社</span><span id="detailPublisher">-</span></div>
+                <div class="info-row"><span>ISBN</span><span id="detailIsbn">-</span></div>
+                <div class="info-row"><span>库存</span><span id="detailStock">有货</span></div>
+                <div class="info-row"><span>销量</span><span id="detailSales">0</span></div>
+                <div class="quantity-box">
+                    <label>数量</label>
+                    <div class="quantity-input">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <input type="number" class="qty-num" id="qty" value="1" min="1">
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button class="btn-buy" onclick="buyNow()">立即购买</button>
+                    <button class="btn-cart" onclick="addToCart()">加入购物车</button>
+                </div>
+            </div>
+        </div>
+        <div class="product-desc">
+            <h3>商品简介</h3>
+            <p id="detailDesc">商品描述加载中...</p>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        const products = getProducts();
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id') || 1);
+        const product = products.find(p => p.id === productId) || products[0];
+
+        document.getElementById('detailTitle').textContent = product.name;
+        document.getElementById('detailSubtitle').textContent = product.subtitle || product.name;
+        document.getElementById('detailPrice').textContent = '¥' + product.price;
+        document.getElementById('detailOriginal').textContent = '¥' + product.originalPrice;
+        document.getElementById('detailAuthor').textContent = product.author || '未知';
+        document.getElementById('detailPublisher').textContent = product.publisher || '东软出版社';
+        document.getElementById('detailIsbn').textContent = product.isbn || '978-7-000-00000-0';
+        document.getElementById('detailSales').textContent = product.sales || 0;
+        document.getElementById('detailStock').textContent = product.stock > 0 ? '有货' : '缺货';
+        document.getElementById('detailDesc').textContent = product.description || '暂无描述';
+        document.getElementById('productImage').src = product.image || '../images/product1.jpg';
+        document.getElementById('productName').textContent = product.name;
+        document.getElementById('categoryName').textContent = product.category || '图书';
+
+        function changeQty(delta) {
+            const input = document.getElementById('qty');
+            let val = parseInt(input.value) + delta;
+            if (val < 1) val = 1;
+            if (val > product.stock) val = product.stock;
+            input.value = val;
+        }
+
+        function addToCart() {
+            const qty = parseInt(document.getElementById('qty').value);
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!user) { alert('请先登录'); window.location.href = 'login.html'; return; }
+            let cart = JSON.parse(localStorage.getItem('cart_' + user.username) || '[]');
+            const idx = cart.findIndex(i => i.id === product.id);
+            if (idx >= 0) cart[idx].qty += qty;
+            else cart.push({ id: product.id, qty });
+            localStorage.setItem('cart_' + user.username, JSON.stringify(cart));
+            alert('已加入购物车！');
+        }
+
+        function buyNow() {
+            addToCart();
+            window.location.href = 'checkout.html';
+        }
+    </script>
+</body>
+</html>

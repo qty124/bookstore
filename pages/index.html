@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>东软汇达 - 首页</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0; }
+        .nav { display: flex; align-items: center; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 15px 20px; }
+        .logo { font-size: 28px; font-weight: bold; letter-spacing: 2px; }
+        .search-box { display: flex; flex: 1; max-width: 500px; margin: 0 30px; }
+        .search-box input { flex: 1; padding: 10px 15px; border: none; border-radius: 25px 0 0 25px; outline: none; font-size: 14px; }
+        .search-box button { padding: 10px 25px; border: none; background: #ff6b6b; color: white; border-radius: 0 25px 25px 0; cursor: pointer; }
+        .nav-links a { color: white; text-decoration: none; margin: 0 15px; font-size: 14px; }
+        .nav-links a:hover { text-decoration: underline; }
+        .banner { position: relative; max-width: 1200px; margin: 20px auto; overflow: hidden; border-radius: 10px; }
+        .slides { display: flex; transition: transform 0.5s ease; }
+        .slide { min-width: 100%; position: relative; }
+        .slide img { width: 100%; height: 400px; object-fit: cover; }
+        .slide-text { position: absolute; bottom: 30px; left: 30px; background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 8px; color: white; }
+        .slide-text h2 { font-size: 24px; margin-bottom: 5px; }
+        .banner-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; }
+        .banner-nav.prev { left: 15px; }
+        .banner-nav.next { right: 15px; }
+        .banner-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+        .dot { width: 10px; height: 10px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; }
+        .dot.active { background: #ff6b6b; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin: 30px 0 20px; }
+        .section-title h2 { font-size: 22px; border-left: 4px solid #667eea; padding-left: 12px; }
+        .section-title a { color: #667eea; text-decoration: none; font-size: 14px; }
+        .categories { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .category-btn { padding: 8px 20px; border: 1px solid #ddd; background: white; border-radius: 20px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+        .category-btn:hover, .category-btn.active { background: #667eea; color: white; border-color: #667eea; }
+        .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; cursor: pointer; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+        .product-card img { width: 100%; height: 180px; object-fit: cover; }
+        .product-info { padding: 15px; }
+        .product-title { font-size: 14px; color: #333; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-price { color: #ff6b6b; font-size: 20px; font-weight: bold; }
+        .product-price small { font-size: 12px; color: #999; text-decoration: line-through; margin-left: 8px; }
+        .product-sales { font-size: 12px; color: #999; margin-top: 5px; }
+        .add-cart-btn { width: 100%; padding: 8px; border: none; background: #667eea; color: white; border-radius: 5px; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
+        .add-cart-btn:hover { background: #764ba2; }
+        .footer { background: #333; color: white; text-align: center; padding: 20px; margin-top: 50px; }
+        .footer p { font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">东软汇达</div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索商品...">
+                <button onclick="searchProducts()">搜索</button>
+            </div>
+            <div class="nav-links">
+                <a href="user.html">个人中心</a>
+                <a href="cart.html">购物车</a>
+                <a href="login.html">登录/注册</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="banner">
+        <div class="slides" id="slides">
+            <div class="slide">
+                <img src="../images/banner1.svg" alt="轮播图1">
+                <div class="slide-text"><h2>618 大促来袭</h2><p>全网最低价 错过等一年</p></div>
+            </div>
+            <div class="slide">
+                <img src="../images/banner2.svg" alt="轮播图2">
+                <div class="slide-text"><h2>新品上市</h2><p>时尚潮流 同步全球</p></div>
+            </div>
+            <div class="slide">
+                <img src="../images/banner3.svg" alt="轮播图3">
+                <div class="slide-text"><h2>会员专享</h2><p>VIP特权 专属优惠</p></div>
+            </div>
+        </div>
+        <button class="banner-nav prev" onclick="changeSlide(-1)">&lt;</button>
+        <button class="banner-nav next" onclick="changeSlide(1)">&gt;</button>
+        <div class="banner-dots" id="dots"></div>
+    </div>
+
+    <div class="container">
+        <div class="section-title">
+            <h2>热门分类</h2>
+            <a href="#">查看更多 &gt;</a>
+        </div>
+        <div class="categories" id="categories"></div>
+
+        <div class="section-title">
+            <h2>热门商品</h2>
+            <a href="#">查看更多 &gt;</a>
+        </div>
+        <div class="products" id="products"></div>
+    </div>
+
+    <footer class="footer">
+        <p>学号: 2024001 | 姓名: 覃天怡</p>
+        <p>&copy; 2026 东软汇达购物网站 版权所有</p>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        let currentSlide = 0;
+        const slides = document.getElementById('slides');
+        const totalSlides = 3;
+
+        function createDots() {
+            const dotsContainer = document.getElementById('dots');
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function changeSlide(direction) {
+            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+            goToSlide(currentSlide);
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            slides.style.transform = `translateX(-${index * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, i) => {
+                dot.className = 'dot' + (i === index ? ' active' : '');
+            });
+        }
+
+        function autoSlide() {
+            setInterval(() => changeSlide(1), 3000);
+        }
+
+        createDots();
+        autoSlide();
+
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                window.location.href = `product.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+    </script>
+</body>
+</html>

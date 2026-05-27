@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - 东软汇达</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .register-container { background: white; border-radius: 15px; padding: 40px 50px; width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .logo { text-align: center; font-size: 28px; font-weight: bold; color: #667eea; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; color: #333; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .form-group input.error { border-color: #ff6b6b; }
+        .error-msg { color: #ff6b6b; font-size: 12px; margin-top: 5px; display: none; }
+        .register-btn { width: 100%; padding: 12px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-size: 16px; cursor: pointer; }
+        .links { text-align: center; margin-top: 20px; font-size: 14px; }
+        .links a { color: #667eea; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo">东软汇达</div>
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" id="username" placeholder="2-20位字母数字" required>
+                <div class="error-msg" id="usernameError"></div>
+            </div>
+            <div class="form-group">
+                <label>邮箱</label>
+                <input type="email" id="email" placeholder="请输入邮箱" required>
+                <div class="error-msg" id="emailError"></div>
+            </div>
+            <div class="form-group">
+                <label>手机号</label>
+                <input type="tel" id="phone" placeholder="请输入手机号" required>
+                <div class="error-msg" id="phoneError"></div>
+            </div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" placeholder="6位以上" required>
+                <div class="error-msg" id="passwordError"></div>
+            </div>
+            <div class="form-group">
+                <label>确认密码</label>
+                <input type="password" id="confirmPwd" placeholder="再次输入密码" required>
+                <div class="error-msg" id="confirmPwdError"></div>
+            </div>
+            <button type="submit" class="register-btn">注册</button>
+        </form>
+        <div class="links">
+            <a href="login.html">已有账号？立即登录</a>
+        </div>
+    </div>
+
+    <script>
+        function validateUsername(v) { return /^[a-zA-Z0-9]{2,20}$/.test(v); }
+        function validateEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+        function validatePhone(v) { return /^1[3-9]\d{9}$/.test(v); }
+        function validatePassword(v) { return v.length >= 6; }
+
+        function showError(field, msg) {
+            const input = document.getElementById(field);
+            const error = document.getElementById(field + 'Error');
+            input.classList.add('error');
+            error.textContent = msg;
+            error.style.display = 'block';
+        }
+
+        function clearError(field) {
+            document.getElementById(field).classList.remove('error');
+            document.getElementById(field + 'Error').style.display = 'none';
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPwd = document.getElementById('confirmPwd').value;
+
+            if (!validateUsername(username)) { showError('username', '用户名2-20位字母数字'); return; }
+            if (!validateEmail(email)) { showError('email', '邮箱格式不正确'); return; }
+            if (!validatePhone(phone)) { showError('phone', '手机号格式不正确'); return; }
+            if (!validatePassword(password)) { showError('password', '密码至少6位'); return; }
+            if (password !== confirmPwd) { showError('confirmPwd', '两次密码不一致'); return; }
+
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            if (users.find(u => u.username === username)) {
+                showError('username', '用户名已存在');
+                return;
+            }
+
+            const user = { username, email, phone, password };
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('注册成功！请登录');
+            window.location.href = 'login.html';
+        }
+
+        ['username','email','phone','password','confirmPwd'].forEach(id => {
+            document.getElementById(id).oninput = () => clearError(id);
+        });
+    </script>
+</body>
+</html>

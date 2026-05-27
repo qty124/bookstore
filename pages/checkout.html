@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>确认订单 - 东软汇达</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 0; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+        h1 { font-size: 22px; margin-bottom: 20px; }
+        .order-box { display: flex; gap: 20px; }
+        .order-main { flex: 1; }
+        .order-sidebar { width: 300px; }
+        .section { background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+        .section h3 { font-size: 16px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .address-item { padding: 10px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
+        .address-item.selected { border-color: #667eea; background: #f8f8ff; }
+        .address-item p { font-size: 14px; margin: 3px 0; }
+        .product-item { display: flex; gap: 15px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #f5f5f5; }
+        .product-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .product-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; }
+        .product-item-info { flex: 1; }
+        .product-item-name { font-size: 14px; color: #333; }
+        .product-item-meta { font-size: 12px; color: #999; margin-top: 5px; }
+        .product-item-price { font-size: 14px; color: #ff6b6b; font-weight: bold; }
+        .form-row { margin-bottom: 15px; }
+        .form-row label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; }
+        .form-row input, .form-row select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .payment-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 10px; cursor: pointer; }
+        .payment-item.selected { border-color: #667eea; background: #f8f8ff; }
+        .payment-item input { margin-right: 10px; }
+        .order-summary div { display: flex; justify-content: space-between; margin: 8px 0; font-size: 14px; }
+        .order-summary .total { font-size: 18px; color: #ff6b6b; font-weight: bold; margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee; }
+        .submit-btn { width: 100%; padding: 15px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">东软汇达</div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="cart.html">购物车</a>
+                <a href="user.html">个人中心</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>确认订单</h1>
+        <div class="order-box">
+            <div class="order-main">
+                <div class="section">
+                    <h3>收货地址</h3>
+                    <div id="addressList"></div>
+                    <div class="form-row" style="margin-top:15px">
+                        <label>添加新地址</label>
+                        <input type="text" id="newAddress" placeholder="请输入收货地址">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>商品清单</h3>
+                    <div id="productList"></div>
+                </div>
+
+                <div class="section">
+                    <h3>配送方式</h3>
+                    <div class="payment-item selected">
+                        <input type="radio" name="delivery" checked>
+                        <span>快递配送（免运费）</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3>支付方式</h3>
+                    <div class="payment-item selected" onclick="selectPayment(this)">
+                        <input type="radio" name="payment" checked>
+                        <span>在线支付（支付宝/微信）</span>
+                    </div>
+                    <div class="payment-item" onclick="selectPayment(this)">
+                        <input type="radio" name="payment">
+                        <span>货到付款</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-sidebar">
+                <div class="section">
+                    <h3>订单摘要</h3>
+                    <div id="orderSummary"></div>
+                    <button class="submit-btn" onclick="submitOrder()">提交订单</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        function selectPayment(el) {
+            el.parentElement.querySelectorAll('.payment-item').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+        }
+
+        function loadOrder() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (!user) { alert('请先登录'); window.location.href = 'login.html'; return; }
+
+            const addresses = JSON.parse(localStorage.getItem('addresses_' + user.username) || '[]');
+            if (addresses.length === 0) addresses.push({ name: user.username, phone: '13800138000', address: '湖北省武汉市洪山区东软软件园' });
+            localStorage.setItem('addresses_' + user.username, JSON.stringify(addresses));
+
+            let addrHtml = '';
+            addresses.forEach((addr, i) => {
+                addrHtml += `<div class="address-item ${i === 0 ? 'selected' : ''}" onclick="selectAddr(this,${i})">
+                    <p><strong>${addr.name}</strong> ${addr.phone}</p>
+                    <p>${addr.address}</p>
+                </div>`;
+            });
+            document.getElementById('addressList').innerHTML = addrHtml;
+
+            const cart = JSON.parse(localStorage.getItem('cart_' + user.username) || '[]');
+            const products = getProducts();
+            let total = 0;
+            let prodHtml = '';
+            cart.forEach(item => {
+                const p = products.find(x => x.id === item.id) || products[0];
+                total += p.price * item.qty;
+                prodHtml += `<div class="product-item">
+                    <img src="${p.image || '../images/product1.svg'}">
+                    <div class="product-item-info">
+                        <div class="product-item-name">${p.name}</div>
+                        <div class="product-item-meta">x${item.qty}</div>
+                    </div>
+                    <div class="product-item-price">¥${(p.price * item.qty).toFixed(2)}</div>
+                </div>`;
+            });
+            document.getElementById('productList').innerHTML = prodHtml;
+            document.getElementById('orderSummary').innerHTML = `
+                <div><span>商品金额</span><span>¥${total.toFixed(2)}</span></div>
+                <div><span>运费</span><span>¥0.00</span></div>
+                <div><span>优惠</span><span>-¥0.00</span></div>
+                <div class="total"><span>应付总额</span><span>¥${total.toFixed(2)}</span></div>`;
+        }
+
+        let selectedAddrIdx = 0;
+        function selectAddr(el, idx) {
+            el.parentElement.querySelectorAll('.address-item').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedAddrIdx = idx;
+        }
+
+        function submitOrder() {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const addresses = JSON.parse(localStorage.getItem('addresses_' + user.username) || '[]');
+            const newAddr = document.getElementById('newAddress').value.trim();
+            if (newAddr) {
+                addresses.push({ name: user.username, phone: '13800138000', address: newAddr });
+                localStorage.setItem('addresses_' + user.username, JSON.stringify(addresses));
+            }
+
+            const cart = JSON.parse(localStorage.getItem('cart_' + user.username) || '[]');
+            const products = getProducts();
+            let total = 0;
+            cart.forEach(item => {
+                const p = products.find(x => x.id === item.id);
+                if (p) total += p.price * item.qty;
+            });
+
+            const orders = JSON.parse(localStorage.getItem('orders_' + user.username) || '[]');
+            const orderNo = 'DD' + Date.now();
+            orders.unshift({
+                orderNo, date: new Date().toLocaleString(),
+                items: cart, total, status: '待支付',
+                address: addresses[selectedAddrIdx]?.address || ''
+            });
+            localStorage.setItem('orders_' + user.username, JSON.stringify(orders));
+
+            // 清空购物车
+            localStorage.setItem('cart_' + user.username, '[]');
+
+            alert(`订单提交成功！订单号：${orderNo}`);
+            window.location.href = `order-detail.html?no=${orderNo}`;
+        }
+
+        loadOrder();
+    </script>
+</body>
+</html>

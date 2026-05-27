@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 东软汇达</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 0; }
+        .header-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 20px; font-size: 14px; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+        .user-info { background: white; border-radius: 10px; padding: 30px; margin-bottom: 20px; display: flex; align-items: center; gap: 30px; }
+        .avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: bold; }
+        .user-details h2 { font-size: 22px; margin-bottom: 5px; }
+        .user-details p { font-size: 14px; color: #999; }
+        .logout-btn { margin-left: auto; padding: 10px 25px; border: 1px solid white; background: transparent; color: white; border-radius: 8px; cursor: pointer; }
+        .logout-btn:hover { background: white; color: #667eea; }
+        .content { display: flex; gap: 20px; }
+        .sidebar { width: 200px; }
+        .sidebar-menu { background: white; border-radius: 10px; overflow: hidden; }
+        .menu-item { padding: 15px 20px; border-bottom: 1px solid #f5f5f5; cursor: pointer; font-size: 14px; color: #333; }
+        .menu-item:last-child { border-bottom: none; }
+        .menu-item.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+        .main-content { flex: 1; }
+        .panel { background: white; border-radius: 10px; padding: 25px; }
+        .panel h3 { font-size: 18px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #667eea; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-card.green { background: linear-gradient(135deg, #11998e, #38ef7d); }
+        .stat-card.orange { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .stat-card.yellow { background: linear-gradient(135deg, #f5af19, #f12711); }
+        .stat-num { font-size: 28px; font-weight: bold; }
+        .stat-label { font-size: 12px; margin-top: 5px; opacity: 0.9; }
+        .order-list { margin-top: 20px; }
+        .order-item { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #666; }
+        .order-header .order-no { color: #333; font-weight: bold; }
+        .order-status { color: #ff6b6b; }
+        .order-products { display: flex; gap: 10px; flex-wrap: wrap; }
+        .order-product { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        .no-data { text-align: center; padding: 40px; color: #999; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">东软汇达</div>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="cart.html">购物车</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="user-info" id="userInfo"></div>
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="sidebar-menu">
+                    <div class="menu-item active" onclick="showPanel('orders')">我的订单</div>
+                    <div class="menu-item" onclick="showPanel('favorites')">我的收藏</div>
+                    <div class="menu-item" onclick="showPanel('settings')">账户设置</div>
+                </div>
+            </div>
+            <div class="main-content">
+                <div class="panel" id="ordersPanel">
+                    <h3>我的订单</h3>
+                    <div class="stats">
+                        <div class="stat-card"><div class="stat-num" id="statPending">0</div><div class="stat-label">待支付</div></div>
+                        <div class="stat-card green"><div class="stat-num" id="statShipped">0</div><div class="stat-label">待收货</div></div>
+                        <div class="stat-card orange"><div class="stat-num" id="statCompleted">0</div><div class="stat-label">已完成</div></div>
+                        <div class="stat-card yellow"><div class="stat-num" id="statAll">0</div><div class="stat-label">全部订单</div></div>
+                    </div>
+                    <div class="order-list" id="orderList"></div>
+                </div>
+                <div class="panel" id="favoritesPanel" style="display:none">
+                    <h3>我的收藏</h3>
+                    <div class="no-data">暂无收藏商品</div>
+                </div>
+                <div class="panel" id="settingsPanel" style="display:none">
+                    <h3>账户设置</h3>
+                    <div id="settingsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        const user = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!user) { alert('请先登录'); window.location.href = 'login.html'; }
+
+        document.getElementById('userInfo').innerHTML = `
+            <div class="avatar">${user.username.charAt(0).toUpperCase()}</div>
+            <div class="user-details">
+                <h2>${user.username}</h2>
+                <p>邮箱：${user.email} | 手机：${user.phone}</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">退出登录</button>`;
+
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders_' + user.username) || '[]');
+            const products = getProducts();
+            document.getElementById('statAll').textContent = orders.length;
+            document.getElementById('statPending').textContent = orders.filter(o => o.status === '待支付').length;
+            document.getElementById('statShipped').textContent = orders.filter(o => o.status === '待收货').length;
+            document.getElementById('statCompleted').textContent = orders.filter(o => o.status === '已完成').length;
+
+            if (orders.length === 0) {
+                document.getElementById('orderList').innerHTML = '<div class="no-data">暂无订单，<a href="index.html" style="color:#667eea">去购物</a></div>';
+                return;
+            }
+            let html = '';
+            orders.slice(0, 5).forEach(order => {
+                html += `<div class="order-item">
+                    <div class="order-header">
+                        <span class="order-no">${order.orderNo}</span>
+                        <span>${order.date}</span>
+                        <span class="order-status">${order.status}</span>
+                    </div>
+                    <div class="order-products">`;
+                order.items.forEach(item => {
+                    const p = products.find(x => x.id === item.id) || products[0];
+                    html += `<img src="${p.image || '../images/product1.svg'}" class="order-product" title="${p.name}">`;
+                });
+                html += `</div></div>`;
+            });
+            document.getElementById('orderList').innerHTML = html;
+        }
+
+        function showPanel(name) {
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+            document.getElementById(name + 'Panel').style.display = 'block';
+            if (name === 'settings') {
+                document.getElementById('settingsContent').innerHTML = `
+                    <div class="form-row"><label>用户名</label><input type="text" value="${user.username}" disabled></div>
+                    <div class="form-row"><label>邮箱</label><input type="email" value="${user.email}"></div>
+                    <div class="form-row"><label>手机号</label><input type="tel" value="${user.phone}"></div>
+                    <button class="submit-btn" onclick="saveSettings()" style="width:auto;padding:10px 30px;margin-top:15px">保存设置</button>`;
+            }
+        }
+
+        function saveSettings() { alert('设置已保存'); }
+        function logout() { localStorage.removeItem('currentUser'); alert('已退出'); window.location.href = 'login.html'; }
+        loadOrders();
+    </script>
+    <style>
+        .form-row { margin-bottom: 15px; }
+        .form-row label { display: block; font-size: 14px; color: #666; margin-bottom: 5px; }
+        .form-row input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .submit-btn { width: 100%; padding: 12px; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 8px; cursor: pointer; }
+    </style>
+</body>
+</html>
