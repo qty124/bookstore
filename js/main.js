@@ -9,7 +9,7 @@ function getProducts() {
             isbn: '978-7-115-42843-4', sales: 3280,
             stock: 99, category: '编程',
             description: 'JavaScript高级程序员必备参考书，涵盖ES6+新特性，深入讲解JS核心概念、设计模式、浏览器API等内容。',
-            image: '../images/product1.svg'
+            image: '../images/product1.jpg'
         },
         {
             id: 2, name: '计算机网络（第7版）',
@@ -19,7 +19,7 @@ function getProducts() {
             isbn: '978-7-121-34012-8', sales: 5620,
             stock: 100, category: '计算机基础',
             description: '系统讲解计算机网络体系结构、TCP/IP协议、路由交换等核心知识，是网络工程专业必修教材。',
-            image: '../images/product2.svg'
+            image: '../images/product2.jpg'
         },
         {
             id: 3, name: 'Python编程：从入门到实践（第2版）',
@@ -29,7 +29,7 @@ function getProducts() {
             isbn: '978-7-115-52856-1', sales: 8900,
             stock: 100, category: '编程',
             description: 'Python入门首选书籍，涵盖基础语法、实战项目（数据可视化、Web开发、游戏开发等）。',
-            image: '../images/product3.svg'
+            image: '../images/product3.jpg'
         },
         {
             id: 4, name: '算法导论（第3版）',
@@ -39,7 +39,7 @@ function getProducts() {
             isbn: '978-7-111-40701-0', sales: 2100,
             stock: 50, category: '编程',
             description: '算法领域经典教材，覆盖排序、图算法、动态规划等核心内容。',
-            image: '../images/product4.svg'
+            image: '../images/product4.jpg'
         },
         {
             id: 5, name: 'HTTP权威指南',
@@ -49,7 +49,7 @@ function getProducts() {
             isbn: '978-7-121-15541-7', sales: 1850,
             stock: 60, category: 'Web开发',
             description: '详细讲解HTTP协议、Web技术内幕，是Web开发者的必备参考。',
-            image: '../images/product5.svg'
+            image: '../images/product5.jpg'
         },
         {
             id: 6, name: '深入理解计算机系统（第3版）',
@@ -59,7 +59,7 @@ function getProducts() {
             isbn: '978-7-111-54493-2', sales: 4200,
             stock: 80, category: '计算机基础',
             description: '从程序员视角理解计算机系统，涵盖程序表示、处理器架构、内存层次等核心内容。',
-            image: '../images/product6.svg'
+            image: '../images/product6.jpg'
         },
         {
             id: 7, name: 'Vue.js实战',
@@ -69,7 +69,7 @@ function getProducts() {
             isbn: '978-7-115-47042-4', sales: 3200,
             stock: 70, category: '前端框架',
             description: 'Vue.js框架实战指南，通过案例讲解组件、路由、状态管理等核心功能。',
-            image: '../images/product7.svg'
+            image: '../images/product7.jpg'
         },
         {
             id: 8, name: 'CSS权威指南（第3版）',
@@ -79,7 +79,7 @@ function getProducts() {
             isbn: '978-7-5083-6688-5', sales: 1580,
             stock: 55, category: 'Web开发',
             description: 'CSS样式设计完整参考，涵盖CSS3新特性、布局模型、动画效果等。',
-            image: '../images/product8.svg'
+            image: '../images/product8.jpg'
         }
     ];
 }
